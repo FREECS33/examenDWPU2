@@ -66,32 +66,58 @@
         >
       </b-col>
     </b-row>
-    <hr />
+
+
     <b-row class="justify-content-center">
-      <b-card
-        v-for="(book, index) in books"
-        :key="index"
-        :title="book.nameBook"
-        :img-src="book.image ? book.image : 'https://via.placeholder.com/350'"
-        img-alt="imagen"
-        img-top
-        img-height="350px"
-        style="max-width: 15rem; margin: 10px"
-        class="mb-2 card"
-        v-bind:style="{ animationDelay: `${index * 0.1}s` }"
-      >
-        <b-card-text>
-          <b-row>
-            <b-col>
-              <b-card-text>Autor: {{ book.author }}</b-card-text>
-              <b-card-text
-                >Año de publicación:
-                {{ formatDate(book.issueDate) }}</b-card-text
-              >
-            </b-col>
-          </b-row>
-        </b-card-text>
-      </b-card>
+      <b-col cols="10">
+        <div class="drop-zone d-flex flex-wrap" @dragover.prevent @dragenter.prevent>
+            <b-card
+                v-for="(book, index) in books"
+                :key="index"
+                :title="book.nameBook"
+                :img-src="book.image ? book.image : 'https://via.placeholder.com/350'"
+                img-alt="imagen"
+                img-top
+                img-height="250px"
+                style="max-width: 15rem; margin: 10px"
+                class="drag-el mb-2 card"
+                draggable="true"
+                @dragstart="handleDragStart(index)"
+                v-bind:style="{ animationDelay: `${index * 0.1}s` }"
+            >
+              <b-card-text>
+                <b-row>
+                  <b-col>
+                    <b-card-text>Autor: {{ book.author }}</b-card-text>
+                    <b-card-text
+                    >Año de publicación:
+                      {{ formatDate(book.issueDate) }}</b-card-text
+                    >
+                  </b-col>
+                </b-row>
+              </b-card-text>
+            </b-card>
+        </div>
+
+      </b-col>
+
+      <b-col cols="2">
+        <b-col class="insert"
+               >
+        </b-col>
+        <b-col class="drop-zone update"
+               @drop = "handleDrop"
+               @dragover.prevent
+               @dragenter.prevent>
+        </b-col>
+        <b-col class="delete"
+               @drop = "handleDrop2"
+               @dragover.prevent
+               @dragenter.prevent
+        >
+        </b-col>
+      </b-col>
+
     </b-row>
 
     <AddBookModal @bookAdded="refreshBookList" />
@@ -126,16 +152,26 @@ export default Vue.extend({
     window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
-    handleDragStart(event) {
-      event.dataTransfer.setData("text/plain", "form-data");
+    handleDragStart(index) {
+      event.dataTransfer.setData("bookId", this.books[index].id);
       this.dragging = true;
     },
     handleDragEnd() {
       this.dragging = false;
     },
     handleDrop(event) {
-      if (this.dragging) {
-        this.addBook();
+      if(this.dragging){
+        const bookId  = event.dataTransfer.getData("bookId");
+        this.openEditBookModal(bookId)
+
+      }
+    },
+
+    handleDrop2(event) {
+      if(this.dragging){
+        const index = event.dataTransfer.getData("bookId");
+        console.log("indice libro: "+index)
+        this.deleteBook(index)
       }
     },
     async getBooks() {
@@ -176,10 +212,10 @@ export default Vue.extend({
         this.$bvModal.show("addBookModal");
       });
     },
-    openEditBookModal(book) {
-      this.selectedBook = book;
-      this.selectedBook.issueDate = new Date(book.issueDate).getFullYear();
-
+    openEditBookModal(bookId) {
+      const book = this.books[bookId-1]
+      console.log(book.issueDate)
+      this.selectedBook = book
       this.$nextTick(() => {
         this.$bvModal.show("editBookModal");
       });
@@ -189,9 +225,8 @@ export default Vue.extend({
     },
     deleteBook(index) {
       try {
-        const book = this.books[index];
-        bookService.deleteBook(book.id);
-        this.books.splice(index, 1);
+        bookService.deleteBook(index);
+        this.refreshBookList()
       } catch (error) {
         console.log(error);
       }
@@ -243,4 +278,43 @@ export default Vue.extend({
     transform: translateY(0);
   }
 }
+.insert {
+  background-image: url("insert.png");
+  background-size: 150px 150px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 2px solid black;
+  margin: auto 0 30px;
+  border-radius: 10px;
+
+  height: 150px;
+}
+
+.update {
+  background-image: url("edit.png");
+  background-size: 150px 150px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 2px solid black;
+  margin: auto 0 30px;
+  border-radius: 10px;
+
+  height: 150px;
+}
+
+.delete {
+  background-image: url("delete.png");
+  background-size: 150px 150px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 2px solid black;
+  margin: auto;
+  border-radius: 10px;
+
+  height: 150px;
+}
 </style>
+
+
+
+

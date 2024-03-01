@@ -10,7 +10,9 @@
     cancel-title="Cancelar"
     cancel-variant="danger"
     @ok="editBook"
+
     :ok-disabled="!book.nameBook"
+
     @cancel="closeModal"
   >
     <b-container fluid>
@@ -52,6 +54,7 @@ export default Vue.extend({
   },
   mounted() {
     this.closeModal();
+
   },
   methods: {
     async editBook() {
