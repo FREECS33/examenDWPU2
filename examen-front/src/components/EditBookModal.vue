@@ -10,7 +10,7 @@
     cancel-title="Cancelar"
     cancel-variant="danger"
     @ok="editBook"
-    :ok-disabled="book.title.trim() === ''"
+    :ok-disabled="!book.nameBook"
     @cancel="closeModal"
   >
     <b-container fluid>
@@ -36,8 +36,8 @@
     </b-container>
   </b-modal>
 </template>
-  
-  <script>
+
+<script>
 import Vue from "vue";
 import bookService from "../books/BookService";
 

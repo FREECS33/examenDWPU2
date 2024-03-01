@@ -10,7 +10,7 @@
       cancel-title="Cancelar"
       cancel-variant="danger"
       @ok="addBook"
-      :ok-disabled="newBook.nameBook.trim() === ''"
+      :ok-disabled="!newBook.nameBook"
       @cancel="closeModal"
     >
       <b-container fluid>
