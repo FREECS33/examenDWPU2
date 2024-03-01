@@ -10,7 +10,7 @@
     cancel-title="Cancelar"
     cancel-variant="danger"
     @ok="editBook"
-    :ok-disabled="!book.nameBook"
+    :ok-disabled="book.nameBook.trim() === ''"
     @cancel="closeModal"
   >
     <b-container fluid>
@@ -23,7 +23,7 @@
         </b-form-group>
         <b-form-group label="Año de publicación:" label-for="issueDate">
           <b-form-input
-            v-model="book.issueDate"
+            v-model="book.issueDate.toString()"
             id="issueDate"
             type="number"
             required
@@ -37,7 +37,7 @@
   </b-modal>
 </template>
 
-<script>
+  <script>
 import Vue from "vue";
 import bookService from "../books/BookService";
 
@@ -52,6 +52,7 @@ export default Vue.extend({
   },
   mounted() {
     this.closeModal();
+
   },
   methods: {
     async editBook() {
