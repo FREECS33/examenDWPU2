@@ -10,7 +10,6 @@
     cancel-title="Cancelar"
     cancel-variant="danger"
     @ok="editBook"
-
     :ok-disabled="!book.nameBook"
 
     @cancel="closeModal"

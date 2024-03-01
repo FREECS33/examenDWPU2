@@ -102,9 +102,7 @@
       </b-col>
 
       <b-col cols="2">
-        <b-col class="insert"
-               >
-        </b-col>
+
         <b-col class="drop-zone update"
                @drop = "handleDrop"
                @dragover.prevent
@@ -278,17 +276,7 @@ export default Vue.extend({
     transform: translateY(0);
   }
 }
-.insert {
-  background-image: url("insert.png");
-  background-size: 150px 150px;
-  background-repeat: no-repeat;
-  background-position: center;
-  border: 2px solid black;
-  margin: auto 0 30px;
-  border-radius: 10px;
 
-  height: 150px;
-}
 
 .update {
   background-image: url("edit.png");
